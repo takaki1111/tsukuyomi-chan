@@ -5,7 +5,8 @@ import openai
 from PIL import Image
 
 
-API_KEY = "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"
+API_KEY = "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
+"
 openai.api_key = API_KEY
 
 st.title("つくよみちゃんとチャットするWebアプリ")

@@ -80,5 +80,7 @@ def send_pya3rt():
 #st.image(image, caption='サンプル',use_column_width=True)
 T=st.button("送信")
 if T:
+    #ボタンを押したときの条件分岐。
+    #message(ユーザーのインプット)に天気が含まれるなら、天気情報を返す。
     send_pya3rt()
 st.image(image, caption='サンプル',use_column_width=True)

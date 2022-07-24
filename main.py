@@ -75,6 +75,106 @@ def send_pya3rt():
     st.image(image, caption='サンプル',use_column_width=True)
 
 
+#天気情報都道府県
+area_dic = {'北海道/釧路':'014100',
+            '北海道/旭川':'012000',
+            '北海道/札幌':'016000',
+            '青森県':'020000',
+            '岩手県':'030000',
+            '宮城県':'040000',
+            '秋田県':'050000',
+            '山形県':'060000',
+            '福島県':'070000',
+            '茨城県':'080000',
+            '栃木県':'090000',
+            '群馬県':'100000',
+            '埼玉県':'110000',
+            '千葉県':'120000',
+            '東京都':'130000',
+            '神奈川県':'140000',
+            '新潟県':'150000',
+            '富山県':'160000',
+            '石川県':'170000',
+            '福井県':'180000',
+            '山梨県':'190000',
+            '長野県':'200000',
+            '岐阜県':'210000',
+            '静岡県':'220000',
+            '愛知県':'230000',
+            '三重県':'240000',
+            '滋賀県':'250000',
+            '京都府':'260000',
+            '大阪府':'270000',
+            '兵庫県':'280000',
+            '奈良県':'290000',
+            '和歌山県':'300000',
+            '鳥取県':'310000',
+            '島根県':'320000',
+            '岡山県':'330000',
+            '広島県':'340000',
+            '山口県':'350000',
+            '徳島県':'360000',
+            '香川県':'370000',
+            '愛媛県':'380000',
+            '高知県':'390000',
+            '福岡県':'400000',
+            '佐賀県':'410000',
+            '長崎県':'420000',
+            '熊本県':'430000',
+            '大分県':'440000',
+            '宮崎県':'450000',
+            '鹿児島県':'460100',
+            '沖縄県/那覇':'471000',
+            '沖縄県/石垣':'474000'
+            }
+jma_url=jma_url = "https://www.jma.go.jp/bosai/forecast/data/forecast/XXX.json"
+def area_name_url(text):
+  
+  for k , v in area_dic.items():
+    #都道府県
+    if k[0:-1] in text:
+      area_no=area_dic[k]
+      area_descript=k +"の天気"
+      #print("都道府県")
+      break
+    elif k[-2:] in text:
+      #札幌のようなとき
+      area_no=area_dic[k]
+      area_descript=k[-2:] +"の天気"
+      #print("札幌")
+      break
+
+    elif k[:3]=="北海道" and k[:3] in text:
+      #北海道
+      area_no=area_dic["北海道/札幌"]
+      area_descript="北海道の天気"
+      #print("北海道")
+      break
+    elif k[:2]=="沖縄" and k[:2] in text:
+      #沖縄
+      area_no=area_dic["沖縄県/那覇"]
+      area_descript="沖縄の天気"
+      #print("沖縄")
+      break
+  return area_no,area_descript
+
+
+
+def weather_output(area_name_no): 
+  jma_url_new=jma_url.replace('XXX', area_name_no)
+  jma_json = requests.get(jma_url_new).json()
+  jma_weather = jma_json[0]["timeSeries"][0]["areas"][0]["weathers"][0]
+  #全角スペースを削除
+  weather=jma_weather.replace('　', '')
+  jma_temp=jma_json[0]["timeSeries"][0]["areas"][0]["weathers"][2]
+  temp=jma_json[0]["timeSeries"][2]["areas"][0]["temps"]
+  #print(temp)
+  max_temp=temp[1]
+  min_temp=temp[2]
+
+  retuen_sent=area_name_desc+"は" + jma_weather+"。"+"最大気温は"+max_temp+"、"+"最低気温は"+min_temp+"°です。"
+
+  return retuen_sent
 
 
 #st.image(image, caption='サンプル',use_column_width=True)
@@ -82,5 +182,20 @@ T=st.button("送信")
 if T:
     #ボタンを押したときの条件分岐。
     #message(ユーザーのインプット)に天気が含まれるなら、天気情報を返す。
-    send_pya3rt()
+
+    if "天気" in message:
+        print(message)
+        try:
+            area_name_no=area_name_url(message)[0]
+            print(area_name_no)
+            area_name_desc=area_name_url(message)[1]
+            w=weather_output(area_name_no)
+            st.write(w)
+        except:
+            print("エラーです")
+
+    else:
+        send_pya3rt()
 st.image(image, caption='サンプル',use_column_width=True)
+
+

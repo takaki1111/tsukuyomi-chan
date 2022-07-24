@@ -3,6 +3,8 @@ import requests
 import os
 import openai
 from PIL import Image
+import datetime
+
 
 
 API_KEY = "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"
@@ -159,20 +161,56 @@ def area_name_url(text):
   return area_no,area_descript
 
 
+jma_url_new=jma_url.replace('XXX', "130000")
+jma_json = requests.get(jma_url_new).json()
+jma_weather = jma_json[0]["timeSeries"][0]["areas"][0]["weathers"][0]
+jma_date = jma_json[0]["timeSeries"][0]["timeDefines"][0]
+#日付の処理
+pos = jma_date.find('T')
+today=jma_date[:pos]
+today_datetime = datetime.datetime.strptime(today, '%Y-%m-%d')
+print("today_datetime",today_datetime)
+today_str=today_datetime.strftime('%Y年%m月%d日')
+print("today_str",today_str)
+#明日の日付
+tomo_datetime=today_datetime+ datetime.timedelta(days=1)
+jma_weather_tomo = jma_json[0]["timeSeries"][0]["areas"][0]["weathers"][1]
+
+tomo_str=tomo_datetime.strftime('%Y年%m月%d日')
+print("jma_weather_tomo",jma_weather_tomo)
+
+
 
 def weather_output(area_name_no): 
   jma_url_new=jma_url.replace('XXX', area_name_no)
   jma_json = requests.get(jma_url_new).json()
   jma_weather = jma_json[0]["timeSeries"][0]["areas"][0]["weathers"][0]
+  #jma_weather_tomoは明日の天気
+  jma_weather_tomo = jma_json[0]["timeSeries"][0]["areas"][0]["weathers"][1]
+  print("jma_weather_tomo",jma_weather_tomo)
+  jma_date = jma_json[0]["timeSeries"][0]["timeDefines"][0]
+  #日付の処理
+  pos = jma_date.find('T')
+  today=jma_date[:pos]
+  today_datetime = datetime.datetime.strptime(today, '%Y-%m-%d')
+  today_str=today_datetime.strftime('%Y年%m月%d日')
+
+  #明日の日付
+  tomo_datetime=today_datetime+ datetime.timedelta(days=1)
+  tomo_str=tomo_datetime.strftime('%Y年%m月%d日')
+  print(tomo_str)
+
   #全角スペースを削除
-  weather=jma_weather.replace('　', '')
-  jma_temp=jma_json[0]["timeSeries"][0]["areas"][0]["weathers"][2]
+  #weather=jma_weather.replace('　', '')
+  #jma_temp=jma_json[0]["timeSeries"][0]["areas"][0]["weathers"][2]
   temp=jma_json[0]["timeSeries"][2]["areas"][0]["temps"]
-  #print(temp)
+  print(temp)
   max_temp=temp[1]
   min_temp=temp[0]
 
-  retuen_sent=area_name_desc+"は" + jma_weather+"。"+"最高気温は"+max_temp+"、"+"最低気温は"+min_temp+"°です。"
+  retuen_sent="●本日"+today_str+"の"+area_name_desc+"は" \
+              + jma_weather+"の予報。"+"改行"+"・最高気温は"+max_temp+"°、"+"最低気温は"+min_temp+"°です。"\
+              +"改行"+"●明日"+tomo_str + "の"+area_name_desc+"は"+jma_weather_tomo+"の予報です。"
 
   return retuen_sent
 
@@ -191,7 +229,7 @@ if T:
             area_name_desc=area_name_url(message)[1]
             w=weather_output(area_name_no)
             print(w)
-            st.write(w)
+            st.write(w.replace("改行","  \n  "))
         except:
             st.write("エリアがわかりません。  \n  ※エリア名は47都道府県名と札幌、旭川、釧路、那覇、石垣の入力が可能です。  \n   \n  ●天気情報を見るには以下のような例に従ってにエリア名を入力してください。 \n- 例)東京の天気は？ \n- 例)沖縄の天気は？  \n- 例)石垣の天気は？")
             

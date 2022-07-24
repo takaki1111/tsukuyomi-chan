@@ -170,13 +170,13 @@ def weather_output(area_name_no):
   temp=jma_json[0]["timeSeries"][2]["areas"][0]["temps"]
   #print(temp)
   max_temp=temp[1]
-  min_temp=temp[2]
+  min_temp=temp[0]
 
   retuen_sent=area_name_desc+"は" + jma_weather+"。"+"最高気温は"+max_temp+"、"+"最低気温は"+min_temp+"°です。"
 
   return retuen_sent
 
-
+print(weather_output)
 #st.image(image, caption='サンプル',use_column_width=True)
 T=st.button("送信")
 if T:
@@ -190,12 +190,14 @@ if T:
             print(area_name_no)
             area_name_desc=area_name_url(message)[1]
             w=weather_output(area_name_no)
+            print(w)
             st.write(w)
         except:
-            st.write("エリアがわかりません。以下のようにエリア名も入力してください。\n- 例)東京の天気は？")
-
+            st.write("エリアがわかりません。  \n  ※エリア名は47都道府県名と札幌、旭川、釧路、那覇、石垣の入力が可能です。  \n   \n  ●天気情報を見るには以下のような例に従ってにエリア名を入力してください。 \n- 例)東京の天気は？ \n- 例)沖縄の天気は？  \n- 例)石垣の天気は？")
+            
     else:
-        send_pya3rt()
+        print("A")
+        #send_pya3rt()
 st.image(image, caption='サンプル',use_column_width=True)
 
 

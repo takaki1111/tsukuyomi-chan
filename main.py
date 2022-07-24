@@ -192,7 +192,7 @@ if T:
             w=weather_output(area_name_no)
             st.write(w)
         except:
-            print("エラーです")
+            st.write("エリアがわかりません。以下のようにエリア名も入力してください。\n- 例)東京の天気は？")
 
     else:
         send_pya3rt()

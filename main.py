@@ -172,7 +172,7 @@ def weather_output(area_name_no):
   max_temp=temp[1]
   min_temp=temp[2]
 
-  retuen_sent=area_name_desc+"は" + jma_weather+"。"+"最大気温は"+max_temp+"、"+"最低気温は"+min_temp+"°です。"
+  retuen_sent=area_name_desc+"は" + jma_weather+"。"+"最高気温は"+max_temp+"、"+"最低気温は"+min_temp+"°です。"
 
   return retuen_sent
 

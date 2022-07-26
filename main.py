@@ -7,7 +7,7 @@ import datetime
 
 
 
-API_KEY = "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"
+API_KEY = "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"
 openai.api_key = API_KEY
 
 st.title("つくよみちゃんとチャットするWebアプリ")
@@ -57,24 +57,34 @@ emo_dict= {"怒り":"mad","喜び":"joy","悲しみ":"sad","驚き":"surprise","
 chat_logs = []
 
 def send_pya3rt():
-    ans = talk_api(message)
-    prompt="以下は分類の一覧です。\n1. 怒り\n2. 喜び\n3. 悲しみ\n4. 驚き\n5. 普通\n\nセリフの感情を分類一覧から一つ決定します。\nセリフ：output\n感情:"
-    prompt=prompt.replace('output',ans)
-    print(prompt)
-    emo=text_summary(prompt)
-    chat_logs.append('you: ' + message)
-    chat_logs.append('つくよみちゃん: ' + ans)
-    chat_logs.append('つくよみちゃんの感情: ' + emo)
-    for chat_log in chat_logs:
-        st.write(chat_log)
-    
-    #emo_nameは写真の名前
-    emo_name=emo_dict[emo.replace(' ', '')]
-    
-    pic_name= emo_name + '.png'
-    print(pic_name)
-    image = Image.open(pic_name)
-    st.image(image, caption='サンプル',use_column_width=True)
+    try:
+        
+      ans = talk_api(message)
+      prompt="以下は分類の一覧です。\n1. 怒り\n2. 喜び\n3. 悲しみ\n4. 驚き\n5. 普通\n\nセリフの感情を分類一覧から一つ決定します。\nセリフ：output\n感情:"
+      prompt=prompt.replace('output',ans)
+      print(prompt)
+      emo=text_summary(prompt)
+      chat_logs.append('you: ' + message)
+      chat_logs.append('つくよみちゃん: ' + ans)
+      chat_logs.append('つくよみちゃんの感情: ' + emo)
+      for chat_log in chat_logs:
+          st.write(chat_log)
+      #emo_nameは写真の名前
+      emo_name=emo_dict[emo.replace(' ', '')]
+      
+      pic_name= emo_name + '.png'
+      print(pic_name)
+      image = Image.open(pic_name)
+      st.image(image, caption='サンプル',use_column_width=True)
+      emo_nameは写真の名前
+      emo_name=emo_dict[emo.replace(' ', '')]
+      
+    except:
+      import traceback
+      traceback.print_exc()
+      st.write("エラーです。")
+      ans = talk_api(message)
+      st.write(ans)
 
 
 #天気情報都道府県
@@ -234,8 +244,8 @@ if T:
             st.write("エリアがわかりません。  \n  ※エリア名は47都道府県名と札幌、旭川、釧路、那覇、石垣の入力が可能です。  \n   \n  ●天気情報を見るには以下のような例に従ってにエリア名を入力してください。 \n- 例)東京の天気は？ \n- 例)沖縄の天気は？  \n- 例)石垣の天気は？")
             
     else:
-        print("A")
-        #send_pya3rt()
+        
+        send_pya3rt()
 st.image(image, caption='サンプル',use_column_width=True)
 
 
